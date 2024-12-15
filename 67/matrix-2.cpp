@@ -2,6 +2,7 @@
 #include <array>
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 
 void matrix_multification(auto &A, auto &B, auto &C, const int ROW, const int COL)
 {
@@ -52,26 +53,52 @@ void print_matrix(auto &matrix, int space = 3)
     }
 }
 
-int main()
+void operation(auto &A, auto &B, auto &C)
 {
-    const size_t ROW = 3;
-    const size_t COL = 3;
-    std::array<std::array<int, COL>, ROW> A = {}, B = {}, C = {};
     generate_matrix(A);
     generate_matrix(B);
 
-    std::cout << std::endl
-              << "Print A:" << std::endl;
-    print_matrix(A);
+    // std::cout << std::endl
+    //           << "Print A:" << std::endl;
+    // print_matrix(A);
 
-    std::cout << std::endl
-              << "Print B:" << std::endl;
-    print_matrix(B);
+    // std::cout << std::endl
+    //           << "Print B:" << std::endl;
+    // print_matrix(B);
 
-    matrix_multification(A, B, C, ROW, COL);
-    std::cout << std::endl
-              << "Print C:" << std::endl;
-    print_matrix(C, 4);
+    auto t_start = std::chrono::high_resolution_clock::now();
+
+    matrix_multification(A, B, C, A.size(), A.size());
+    auto t_end = std::chrono::high_resolution_clock::now();
+
+    double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+
+    std::cout << "Processing time of " << A.size() << " time:" << elapsed_time_ms << " us" << std::endl;
+
+    // std::cout << std::endl
+    //           << "Print C:" << std::endl;
+    // print_matrix(C, 4);
+}
+
+template <size_t ARRAY_SIZE>
+void create_and_operate()
+{
+    std::array<std::array<int, ARRAY_SIZE>, ARRAY_SIZE> A = {}, B = {}, C = {};
+    operation(A, B, C);
+}
+
+int main()
+{
+    create_and_operate<3>();
+    create_and_operate<8>();
+    create_and_operate<16>();
+    create_and_operate<32>();
+    create_and_operate<64>();
+    create_and_operate<128>();
+    create_and_operate<256>();
+    create_and_operate<512>();
+    create_and_operate<1024>();
+    create_and_operate<2048>();
 
     return 0;
 }
